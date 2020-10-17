@@ -60,7 +60,7 @@ export class PeliculasService {
     );
   }
 
-  getPeliculaDetalle(id: string) {
+  getPeliculaDetalle( id: string ) {
     return this.http.get<MovieDetails>(`${ this.baseUrl }/movie/${ id }`, {
       params: this.params
     });
