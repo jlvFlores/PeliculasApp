@@ -5,6 +5,7 @@ import { Location } from '@angular/common';
 import { PeliculasService } from 'src/app/services/peliculas.service';
 import { MovieDetails } from 'src/app/interfaces/movie-response';
 import { Cast } from 'src/app/interfaces/credits-response';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-pelicula',
@@ -25,18 +26,33 @@ export class PeliculaComponent implements OnInit {
 
     const { id } = this.activatedRoute.snapshot.params;
 
-    this.peliculasService.getPeliculaDetalle( id ).subscribe( movie => {
-      if ( !movie ) {
+    combineLatest([
+
+      this.peliculasService.getPeliculaDetalle( id ),
+      this.peliculasService.getCast( id )
+
+    ]).subscribe( ( [pelicula, cast] ) => {
+      if ( !pelicula ) {
         this.router.navigateByUrl('/home');
         return;
       }
-      this.pelicula = movie;
-    });
 
-    this.peliculasService.getCast( id ).subscribe( cast => {
-      console.log(cast);
+      this.pelicula = pelicula;
       this.cast = cast.filter( actor => actor.profile_path != null);
     });
+
+    // this.peliculasService.getPeliculaDetalle( id ).subscribe( movie => {
+    //   if ( !movie ) {
+    //     this.router.navigateByUrl('/home');
+    //     return;
+    //   }
+    //   this.pelicula = movie;
+    // });
+
+    // this.peliculasService.getCast( id ).subscribe( cast => {
+    //   console.log(cast);
+    //   this.cast = cast.filter( actor => actor.profile_path != null);
+    // });
   }
 
   onRegresar(): void {
