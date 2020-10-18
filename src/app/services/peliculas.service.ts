@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { tap, map, catchError } from 'rxjs/operators';
 
 import { CarteleraResponse, Movie } from '../interfaces/cartelera-response';
-import { CreditsResponse } from '../interfaces/credits-response';
+import { CreditsResponse, Cast } from '../interfaces/credits-response';
 import { MovieDetails } from '../interfaces/movie-response';
 
 
@@ -69,12 +69,13 @@ export class PeliculasService {
     );
   }
 
-  getCast( id: string ) {
+  getCast( id: string ): Observable<Cast[]> {
+
     return this.http.get<CreditsResponse>(`${ this.baseUrl }/movie/${ id }/credits`, {
       params: this.params
     }).pipe(
       map( resp => resp.cast),
-      catchError( err => of())
+      catchError( err => of([]) )
     );
   }
 }
